@@ -37,7 +37,12 @@ public class IbanSearchService {
 
         // Get the full response first
         try {
-            ResponseEntity<BankInfoResponse> fullResponse = tppIbanSearchClient.getBankInfoByIban(body);
+            ResponseEntity<BankInfoResponse> fullResponse = tppIbanSearchClient.getBankInfoByIban(
+                    UUID.fromString(restRequestContext.getRequestId()),  // xRequestID
+                    body,                                                // SearchBankinfoBody
+                    null,                                                // xTimestampUTC (optional)
+                    null                                                 // fintechID (optional)
+            );
             log.info("Full response status: {}, headers: {}", fullResponse.getStatusCode(), fullResponse.getHeaders());
 
             BankInfoResponse response = fullResponse.getBody();
