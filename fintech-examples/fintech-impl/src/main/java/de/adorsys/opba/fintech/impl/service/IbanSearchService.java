@@ -4,14 +4,17 @@ import de.adorsys.opba.fintech.api.model.generated.InlineResponseBankInfo;
 import de.adorsys.opba.fintech.impl.controller.utils.RestRequestContext;
 import de.adorsys.opba.fintech.impl.mapper.BankInfoMapper;
 import de.adorsys.opba.fintech.impl.tppclients.TppIbanSearchClient;
-import de.adorsys.opba.tppbankingapi.bankinfo.model.generated.BankInfoResponse;
-import de.adorsys.opba.tppbankingapi.bankinfo.model.generated.SearchBankinfoBody;
+import de.adorsys.opba.tpp.bankinfo.api.model.generated.BankInfoResponse;
+import de.adorsys.opba.tpp.bankinfo.api.model.generated.SearchBankinfoBody;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import static de.adorsys.opba.fintech.impl.tppclients.Consts.COMPUTE_FINTECH_ID;
+import static de.adorsys.opba.fintech.impl.tppclients.Consts.COMPUTE_X_REQUEST_SIGNATURE;
 
 @Service
 @Slf4j
@@ -25,10 +28,6 @@ public class IbanSearchService {
     @SneakyThrows
     public InlineResponseBankInfo searchByIban(String iban) {
         log.info("Searching for bank info by IBAN: {}", iban);
-        UUID.fromString(restRequestContext.getRequestId());
-
-        // Log the TPP Url being used
-        log.info("TPP URL configured: ${tpp.url}");
 
         SearchBankinfoBody body = new SearchBankinfoBody();
         body.setIban(iban);
@@ -37,13 +36,10 @@ public class IbanSearchService {
 
         // Get the full response first
         try {
-            ResponseEntity<BankInfoResponse> fullResponse = tppIbanSearchClient.getBankInfoByIban(
-                    UUID.fromString(restRequestContext.getRequestId()),  // xRequestID
-                    body,                                                // SearchBankinfoBody
-                    null,                                                // xTimestampUTC (optional)
-                    null                                                 // fintechID (optional)
-            );
-            log.info("Full response status: {}, headers: {}", fullResponse.getStatusCode(), fullResponse.getHeaders());
+            ResponseEntity<BankInfoResponse> fullResponse = tppIbanSearchClient.getBankInfoByIban(UUID.fromString(restRequestContext.getRequestId()),
+                    body,
+                    COMPUTE_FINTECH_ID,
+                    COMPUTE_X_REQUEST_SIGNATURE);
 
             BankInfoResponse response = fullResponse.getBody();
             log.info("Response body: {}", response);

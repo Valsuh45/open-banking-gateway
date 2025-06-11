@@ -6,6 +6,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", implementationPackage = "de.adorsys.opba.fintech.impl.mapper.generated")
 public interface BankInfoMapper {
     InlineResponseBankInfo mapFromTppToFintech(
-        de.adorsys.opba.tppbankingapi.bankinfo.model.generated.BankInfoResponse bankInfoResponse
+            de.adorsys.opba.tpp.bankinfo.api.model.generated.BankInfoResponse bankInfoResponse
     );
 }

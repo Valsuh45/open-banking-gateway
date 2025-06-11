@@ -16,7 +16,7 @@ public class TppBankInfoController implements TppBankInfoApi {
     private final BankInfoService bankInfoService;
 
     @Override
-    public ResponseEntity<BankInfoResponse> getBankInfoByIban(UUID xRequestID, SearchBankinfoBody body, String xTimestampUTC, String xRequestSignature) {
+    public ResponseEntity<BankInfoResponse> getBankInfoByIban(UUID xRequestID, SearchBankinfoBody body, String fintechID, String xRequestSignature) {
         log.info("Received IBAN lookup request: {}", body.getIban());
 
         var response = bankInfoService.getBankInfoByIban(body.getIban());

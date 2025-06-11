@@ -22,7 +22,7 @@ public class ManualMapper {
         return Mappers.getMapper(TransactionsResponseMapper.class).mapFromTppToFintech(transactionsResponse);
     }
 
-    public static InlineResponseBankInfo fromTppToFintech(de.adorsys.opba.tppbankingapi.bankinfo.model.generated.BankInfoResponse bankInfoResponse) {
+    public static InlineResponseBankInfo fromTppToFintech(de.adorsys.opba.tpp.bankinfo.api.model.generated.BankInfoResponse bankInfoResponse) {
         return Mappers.getMapper(BankInfoMapper.class).mapFromTppToFintech(bankInfoResponse);
     }
 }

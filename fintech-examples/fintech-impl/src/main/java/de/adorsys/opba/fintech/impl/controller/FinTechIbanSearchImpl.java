@@ -4,7 +4,6 @@ import de.adorsys.opba.fintech.api.model.generated.InlineResponseBankInfo;
 import de.adorsys.opba.fintech.api.model.generated.SearchBankInfoBody;
 import de.adorsys.opba.fintech.api.resource.generated.FinTechIbanSearchApi;
 import de.adorsys.opba.fintech.impl.service.IbanSearchService;
-import de.adorsys.opba.fintech.impl.service.SessionLogicService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class FinTechIbanSearchImpl implements FinTechIbanSearchApi {
 
     private final IbanSearchService ibanSearchService;
-    private final SessionLogicService sessionLogicService;
 
     @Override
     public ResponseEntity<InlineResponseBankInfo> getBankInfoByIban(
@@ -30,10 +28,6 @@ public class FinTechIbanSearchImpl implements FinTechIbanSearchApi {
             "Received request to get bank info by IBAN: {}",
             body.getIban()
         );
-        if (!sessionLogicService.isSessionAuthorized()) {
-            log.info("getBankInfoByIban failed: user is not authorized!");
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
 
         InlineResponseBankInfo fintechModel = ibanSearchService.searchByIban(
             body.getIban()
@@ -44,8 +38,8 @@ public class FinTechIbanSearchImpl implements FinTechIbanSearchApi {
             fintechModel
         );
 
-        return sessionLogicService.addSessionMaxAgeToHeader(
-            new ResponseEntity<>(fintechModel, HttpStatus.OK)
+        return
+            new ResponseEntity<>(fintechModel, HttpStatus.OK
         );
     }
 }
